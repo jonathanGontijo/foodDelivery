@@ -5,7 +5,7 @@ import 'package:foodly/common/custom_container.dart';
 import 'package:foodly/common/heading.dart';
 import 'package:foodly/constants/constants.dart';
 import 'package:foodly/views/home/all_fastest_foods.dart';
-import 'package:foodly/views/home/all_nearly_restaurants.dart';
+import 'package:foodly/views/home/all_nearby_restaurants.dart';
 import 'package:foodly/views/home/recommendation.dart';
 import 'package:foodly/views/home/widgets/category_list.dart';
 import 'package:foodly/views/home/widgets/foods_list.dart';
