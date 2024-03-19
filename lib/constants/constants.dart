@@ -20,4 +20,4 @@ const kOffWhite = Color(0xffF3F4F8);
 double height = 825.h;
 double width = 375.w;
 
-const String appBaseUrl = "http://localhost:6003";
+const String appBaseUrl = "http://10.0.2.2:8000";

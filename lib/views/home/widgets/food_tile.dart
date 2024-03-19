@@ -5,16 +5,22 @@ import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:foodly/common/app_style.dart';
 import 'package:foodly/common/reusable_text.dart';
 import 'package:foodly/constants/constants.dart';
+import 'package:foodly/models/foods_model.dart';
+import 'package:foodly/views/food/food_page.dart';
+import 'package:get/get.dart';
 
 class FoodTile extends StatelessWidget {
-  FoodTile({super.key, required this.food});
+  FoodTile({super.key, required this.food, this.color});
 
-  final dynamic food;
+  final FoodsModel food;
+  final Color? color;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-        onTap: () {},
+        onTap: () {
+          Get.to(() => FoodPage(food: food));
+        },
         child: Stack(
           clipBehavior: Clip.hardEdge,
           children: [
@@ -23,7 +29,8 @@ class FoodTile extends StatelessWidget {
               height: 70.h,
               width: width,
               decoration: BoxDecoration(
-                  color: kOffWhite, borderRadius: BorderRadius.circular(9.r)),
+                  color: color ?? kOffWhite,
+                  borderRadius: BorderRadius.circular(9.r)),
               child: Container(
                 padding: EdgeInsets.all(4.r),
                 child: Row(
@@ -37,7 +44,7 @@ class FoodTile extends StatelessWidget {
                             width: 70.w,
                             height: 70.h,
                             child: Image.network(
-                              food["imageUrl"],
+                              food.imageUrl[0],
                               fit: BoxFit.cover,
                             ),
                           ),
@@ -68,46 +75,41 @@ class FoodTile extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         ReusableText(
-                          text: food['title'],
+                          text: food.title,
                           style: appStyle(11, kDark, FontWeight.w400),
                         ),
                         ReusableText(
-                          text: "Delivery time: ${food['time']}",
+                          text: "Delivery time: ${food.time}",
                           style: appStyle(11, kGray, FontWeight.w400),
                         ),
                         SizedBox(
                           width: width * 0.7,
                           height: 15.h,
                           child: ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            itemCount: food['additives'].length,
-                            itemBuilder: (context, i) {
-                              var additive = food['additives'][i];
-                              return Container(
-                                margin: EdgeInsets.only(right: 5.w),
-                                decoration: BoxDecoration(
-                                  color: kSecondaryLight,
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(9.r),
-                                  ),
-                                ),
-                                child: Center(
-                                  child: Padding(
-                                    padding: EdgeInsets.all(2.h),
-                                    child: ReusableText(
-                                      text: additive['title'],
-                                      style: appStyle(
-                                        8,
-                                        kGray,
-                                        FontWeight.w400,
-                                      ),
+                              scrollDirection: Axis.horizontal,
+                              itemCount: food.additives.length,
+                              itemBuilder: (context, i) {
+                                Additive additive = food.additives[i];
+                                return Container(
+                                  margin: EdgeInsets.only(right: 5.w),
+                                  decoration: BoxDecoration(
+                                    color: kSecondaryLight,
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(9.r),
                                     ),
                                   ),
-                                ),
-                              );
-                            },
-                          ),
-                        ),
+                                  child: Center(
+                                    child: Padding(
+                                      padding: EdgeInsets.all(2.h),
+                                      child: ReusableText(
+                                          text: additive.title,
+                                          style: appStyle(
+                                              8, kGray, FontWeight.w400)),
+                                    ),
+                                  ),
+                                );
+                              }),
+                        )
                       ],
                     )
                   ],
@@ -124,13 +126,13 @@ class FoodTile extends StatelessWidget {
                     color: kPrimary, borderRadius: BorderRadius.circular(10.r)),
                 child: Center(
                   child: ReusableText(
-                      text: "R\$  ${food['price'].toStringAsFixed(2)}",
+                      text: "\$ ${food.price.toStringAsFixed(2)}",
                       style: appStyle(12, kLightWhite, FontWeight.bold)),
                 ),
               ),
             ),
             Positioned(
-              right: 70.w,
+              right: 75.w,
               top: 6.h,
               child: GestureDetector(
                 onTap: () {},
@@ -138,7 +140,7 @@ class FoodTile extends StatelessWidget {
                   width: 19.w,
                   height: 19.h,
                   decoration: BoxDecoration(
-                      color: kPrimary,
+                      color: kSecondary,
                       borderRadius: BorderRadius.circular(10.r)),
                   child: Center(
                     child: Icon(

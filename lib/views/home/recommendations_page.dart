@@ -6,25 +6,26 @@ import 'package:foodly/common/back_ground_container.dart';
 import 'package:foodly/common/reusable_text.dart';
 import 'package:foodly/common/shimmers/foodlist_shimmer.dart';
 import 'package:foodly/constants/constants.dart';
-import 'package:foodly/hooks/fetch_all_restaurants.dart';
-import 'package:foodly/models/restaurants_model.dart';
-import 'package:foodly/views/home/widgets/restaurant_tile.dart';
+import 'package:foodly/hooks/fetch_all_foods.dart';
+import 'package:foodly/models/foods_model.dart';
+import 'package:foodly/views/home/widgets/food_tile.dart';
 
-class AllNearbyRestaurants extends HookWidget {
-  const AllNearbyRestaurants({super.key});
+class RecommendationsPage extends HookWidget {
+  const RecommendationsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final hookResults = useFetchAllRestaurants("41007428");
-    List<RestaurantsModel>? restaurants = hookResults.data;
+    final hookResults = useFetchAllFoods("41007428");
+    List<FoodsModel>? foods = hookResults.data;
     final isLoading = hookResults.isLoading;
+
     return Scaffold(
       backgroundColor: kSecondary,
       appBar: AppBar(
         elevation: 0,
         backgroundColor: kSecondary,
         title: ReusableText(
-            text: "Nearby Restaurants",
+            text: "Recommendations",
             style: appStyle(13, kLightWhite, FontWeight.w600)),
       ),
       body: BackGroundContainer(
@@ -34,10 +35,10 @@ class AllNearbyRestaurants extends HookWidget {
             : Padding(
                 padding: EdgeInsets.all(12.h),
                 child: ListView(
-                  children: List.generate(restaurants!.length, (i) {
-                    RestaurantsModel restaurant = restaurants[i];
-                    return RestaurantTile(
-                      restaurant: restaurant,
+                  children: List.generate(foods!.length, (i) {
+                    FoodsModel food = foods[i];
+                    return FoodTile(
+                      food: food,
                     );
                   }),
                 ),
