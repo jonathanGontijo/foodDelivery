@@ -11,6 +11,7 @@ import 'package:foodly/constants/constants.dart';
 import 'package:foodly/controllers/foods_controller.dart';
 import 'package:foodly/hooks/fetch_restaurant.dart';
 import 'package:foodly/models/foods_model.dart';
+import 'package:foodly/views/auth/phone_verification_page.dart';
 import 'package:foodly/views/restaurant/restaurant_page.dart';
 import 'package:get/get.dart';
 
