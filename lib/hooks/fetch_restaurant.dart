@@ -21,6 +21,7 @@ fetchRestaurant useFetchRestaurant(String code) {
     try {
       Uri url = Uri.parse('$appBaseUrl/api/restaurant/byId/$code');
       final response = await http.get(url);
+
       if (response.statusCode == 200) {
         var restaurant = jsonDecode(response.body);
         restaurants.value = RestaurantsModel.fromJson(restaurant);
