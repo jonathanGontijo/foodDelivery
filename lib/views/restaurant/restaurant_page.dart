@@ -16,7 +16,12 @@ class RestaurantPage extends StatefulWidget {
   State<RestaurantPage> createState() => _RestaurantPageState();
 }
 
-class _RestaurantPageState extends State<RestaurantPage> {
+class _RestaurantPageState extends State<RestaurantPage>
+    with TickerProviderStateMixin {
+  late TabController _tabController = TabController(
+    length: 2,
+    vsync: this,
+  );
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -62,28 +67,85 @@ class _RestaurantPageState extends State<RestaurantPage> {
             SizedBox(
               height: 10.h,
             ),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 8.0),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 8.w),
               child: Column(
                 children: [
-                  RowText(
+                  const RowText(
                     first: 'Distance to Restaurant',
                     second: '2.7 Km',
                   ),
-                  RowText(
+                  SizedBox(
+                    height: 3.h,
+                  ),
+                  const RowText(
                     first: 'Estimated Price',
                     second: 'R\$ 40.00',
                   ),
-                  RowText(
+                  SizedBox(
+                    height: 3.h,
+                  ),
+                  const RowText(
                     first: 'Estimated Time',
                     second: '30 min',
                   ),
-                  Divider(
+                  const Divider(
                     thickness: 0.7,
                   )
                 ],
               ),
             ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 8.w),
+              child: Container(
+                height: 25.h,
+                width: width,
+                decoration: BoxDecoration(
+                    color: kOffWhite,
+                    borderRadius: BorderRadius.circular(25.r)),
+                child: TabBar(
+                  controller: _tabController,
+                  indicator: BoxDecoration(
+                    color: kPrimary,
+                    borderRadius: BorderRadius.circular(25.r),
+                  ),
+                  labelPadding: EdgeInsets.zero,
+                  labelColor: kLightWhite,
+                  unselectedLabelColor: kGrayLight,
+                  labelStyle: appStyle(12, kLightWhite, FontWeight.normal),
+                  tabs: [
+                    Tab(
+                      child: SizedBox(
+                        width: width / 2,
+                        height: 25,
+                        child: Center(
+                          child: Text("Menu"),
+                        ),
+                      ),
+                    ),
+                    Tab(
+                      child: SizedBox(
+                        width: width / 2,
+                        height: 25,
+                        child: Center(
+                          child: Text("Explore"),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 8.w),
+              child: SizedBox(
+                height: height,
+                child: TabBarView(
+                  controller: _tabController,
+                  children: [],
+                ),
+              ),
+            )
           ],
         ),
       ),
