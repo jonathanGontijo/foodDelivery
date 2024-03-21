@@ -1,5 +1,12 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:foodly/common/app_style.dart';
+import 'package:foodly/common/reusable_text.dart';
+import 'package:foodly/constants/constants.dart';
 import 'package:foodly/models/restaurants_model.dart';
+import 'widget/restaurant_bottom_bar.dart';
+import 'widget/restaurant_top_bar.dart';
 
 class RestaurantPage extends StatefulWidget {
   const RestaurantPage({super.key, required this.restaurant});
@@ -12,9 +19,110 @@ class RestaurantPage extends StatefulWidget {
 class _RestaurantPageState extends State<RestaurantPage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(),
-      body: Container(),
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        backgroundColor: kLightWhite,
+        body: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            Stack(
+              children: [
+                SizedBox(
+                  height: 230.h,
+                  width: width,
+                  child: CachedNetworkImage(
+                    fit: BoxFit.cover,
+                    imageUrl: widget.restaurant!.imageUrl,
+                  ),
+                ),
+                Positioned(
+                  bottom: 0,
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 8.w),
+                    width: width,
+                    height: 40.h,
+                    decoration: BoxDecoration(
+                      color: kPrimary.withOpacity(0.4),
+                      borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(8.r),
+                        topLeft: Radius.circular(8.r),
+                      ),
+                    ),
+                    child: RestaurantBottomBar(restaurant: widget.restaurant),
+                  ),
+                ),
+                Positioned(
+                    top: 40.h,
+                    left: 0,
+                    right: 0,
+                    child: RestaurantTopBar(restaurant: widget.restaurant))
+              ],
+            ),
+            SizedBox(
+              height: 10.h,
+            ),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 8.0),
+              child: Column(
+                children: [
+                  RowText(
+                    first: 'Distance to Restaurant',
+                    second: '2.7 Km',
+                  ),
+                  RowText(
+                    first: 'Estimated Price',
+                    second: 'R\$ 40.00',
+                  ),
+                  RowText(
+                    first: 'Estimated Time',
+                    second: '30 min',
+                  ),
+                  Divider(
+                    thickness: 0.7,
+                  )
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class RowText extends StatelessWidget {
+  const RowText({
+    super.key,
+    required this.first,
+    required this.second,
+  });
+
+  final String first;
+  final String second;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        ReusableText(
+          text: first,
+          style: appStyle(
+            10,
+            kGray,
+            FontWeight.w500,
+          ),
+        ),
+        ReusableText(
+          text: second,
+          style: appStyle(
+            10,
+            kGray,
+            FontWeight.w500,
+          ),
+        ),
+      ],
     );
   }
 }
