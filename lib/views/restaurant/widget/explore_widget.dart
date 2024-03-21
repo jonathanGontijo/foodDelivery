@@ -2,18 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:foodly/common/shimmers/foodlist_shimmer.dart';
 import 'package:foodly/constants/constants.dart';
-import 'package:foodly/hooks/foods_by_restaurant.dart';
+import 'package:foodly/hooks/fetch_foods.dart';
 import 'package:foodly/models/foods_model.dart';
 import 'package:foodly/views/home/widgets/food_tile.dart';
 
-class RestaurantMenuWidget extends HookWidget {
-  const RestaurantMenuWidget({super.key, required this.restaurantId});
+class ExploreWidget extends HookWidget {
+  const ExploreWidget({super.key, required this.code});
 
-  final String restaurantId;
+  final String code;
 
   @override
   Widget build(BuildContext context) {
-    final hookResults = useFetchRestaurantFoods(restaurantId);
+    final hookResults = useFetchFoods(code);
     final foods = hookResults.data;
     final isLoading = hookResults.isLoading;
 

@@ -5,6 +5,8 @@ import 'package:foodly/common/app_style.dart';
 import 'package:foodly/common/reusable_text.dart';
 import 'package:foodly/constants/constants.dart';
 import 'package:foodly/models/restaurants_model.dart';
+import 'package:foodly/views/restaurant/widget/explore_widget.dart';
+import 'package:foodly/views/restaurant/widget/restaurant_menu.dart';
 import 'widget/restaurant_bottom_bar.dart';
 import 'widget/restaurant_top_bar.dart';
 
@@ -136,13 +138,19 @@ class _RestaurantPageState extends State<RestaurantPage>
                 ),
               ),
             ),
+            SizedBox(
+              height: 20.h,
+            ),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 8.w),
               child: SizedBox(
                 height: height,
                 child: TabBarView(
                   controller: _tabController,
-                  children: [],
+                  children: [
+                    RestaurantMenuWidget(restaurantId: widget.restaurant!.id),
+                    ExploreWidget(code: widget.restaurant!.code)
+                  ],
                 ),
               ),
             )
