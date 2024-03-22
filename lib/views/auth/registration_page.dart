@@ -2,28 +2,26 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:foodly/common/app_style.dart';
-import 'package:foodly/common/back_ground_container.dart';
+import 'package:foodly/common/background_container.dart';
 import 'package:foodly/common/custom_button.dart';
 import 'package:foodly/common/reusable_text.dart';
 import 'package:foodly/constants/constants.dart';
-import 'package:foodly/views/auth/registration_page.dart';
-
 import 'package:foodly/views/auth/widget/email_textfield.dart';
 import 'package:foodly/views/auth/widget/password_textfield.dart';
-import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class RegistrationPage extends StatefulWidget {
+  const RegistrationPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<RegistrationPage> createState() => _RegistrationPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _RegistrationPageState extends State<RegistrationPage> {
   late final TextEditingController _emailController = TextEditingController();
   late final TextEditingController _passwordController =
       TextEditingController();
+  late final TextEditingController _userController = TextEditingController();
 
   final FocusNode _passwordFocusNode = FocusNode();
 
@@ -44,7 +42,7 @@ class _LoginPageState extends State<LoginPage> {
         backgroundColor: kPrimary,
         title: Center(
           child: ReusableText(
-              text: "Foodly Family",
+              text: "Foodly Family Registration",
               style: appStyle(20, kLightWhite, FontWeight.bold)),
         ),
       ),
@@ -67,6 +65,19 @@ class _LoginPageState extends State<LoginPage> {
                 child: Column(
                   children: [
                     EmailTextField(
+                      hintText: "UserName",
+                      keyboardType: TextInputType.text,
+                      prefixIcon: const Icon(
+                        CupertinoIcons.profile_circled,
+                        size: 22,
+                        color: kGrayLight,
+                      ),
+                      controller: _userController,
+                    ),
+                    SizedBox(
+                      height: 25.h,
+                    ),
+                    EmailTextField(
                       hintText: "Email",
                       prefixIcon: const Icon(
                         CupertinoIcons.mail,
@@ -81,35 +92,12 @@ class _LoginPageState extends State<LoginPage> {
                     PasswordTextField(
                       controller: _passwordController,
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          GestureDetector(
-                              onTap: () {
-                                Get.to(() => const RegistrationPage(),
-                                    transition: Transition.fadeIn,
-                                    duration:
-                                        const Duration(milliseconds: 1200));
-                              },
-                              child: ReusableText(
-                                  text: "Register",
-                                  style: appStyle(
-                                      12, Colors.blue, FontWeight.normal))),
-                        ],
-                      ),
-                    ),
                     SizedBox(
                       height: 30.h,
                     ),
                     CustomButton(
-                      text: "L O G I N",
-                      onTap: () {
-                        Get.to(() => const LoginPage(),
-                            transition: Transition.cupertino,
-                            duration: const Duration(milliseconds: 900));
-                      },
+                      text: "R E G I S T E R",
+                      onTap: () {},
                       btnHeight: 35.h,
                       btnWidth: width,
                     ),
