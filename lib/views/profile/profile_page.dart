@@ -3,10 +3,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:foodly/common/custom_button.dart';
 import 'package:foodly/common/custom_container.dart';
+import 'package:foodly/views/auth/login_redirect.dart';
 import 'package:foodly/views/profile/widget/profile_app_bar.dart';
 import 'package:foodly/constants/constants.dart';
 import 'package:foodly/views/profile/widget/profile_tile_widget.dart';
 import 'package:foodly/views/profile/widget/user_info_widget.dart';
+import 'package:get/get.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -98,7 +100,10 @@ class ProfilePage extends StatelessWidget {
               height: 20.h,
             ),
             CustomButton(
-              onTap: () {},
+              onTap: () {
+                Get.to(() => const LoginRedirect());
+              },
+              btnWidth: width - 20,
               btnColor: kRed,
               text: "Logout",
               radius: 0,
