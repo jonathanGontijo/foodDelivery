@@ -30,7 +30,7 @@ class ProfilePage extends StatelessWidget {
               height: 10.h,
             ),
             Container(
-              height: 175.h,
+              height: 210.h,
               decoration: const BoxDecoration(
                 color: kLightWhite,
               ),
@@ -65,7 +65,7 @@ class ProfilePage extends StatelessWidget {
               height: 15.h,
             ),
             Container(
-              height: 175.h,
+              height: 210.h,
               decoration: const BoxDecoration(
                 color: kLightWhite,
               ),
@@ -97,7 +97,7 @@ class ProfilePage extends StatelessWidget {
               ),
             ),
             SizedBox(
-              height: 20.h,
+              height: 40.h,
             ),
             CustomButton(
               onTap: () {

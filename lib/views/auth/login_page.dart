@@ -6,6 +6,7 @@ import 'package:foodly/common/back_ground_container.dart';
 import 'package:foodly/common/custom_button.dart';
 import 'package:foodly/common/reusable_text.dart';
 import 'package:foodly/constants/constants.dart';
+import 'package:foodly/models/login_model.dart';
 import 'package:foodly/views/auth/registration_page.dart';
 
 import 'package:foodly/views/auth/widget/email_textfield.dart';
@@ -106,9 +107,16 @@ class _LoginPageState extends State<LoginPage> {
                     CustomButton(
                       text: "L O G I N",
                       onTap: () {
-                        Get.to(() => const LoginPage(),
-                            transition: Transition.cupertino,
-                            duration: const Duration(milliseconds: 900));
+                        if (_emailController.text.isNotEmpty &&
+                            _passwordController.text.length >= 8) {
+                          LoginModel model = LoginModel(
+                              email: _emailController.text,
+                              password: _passwordController.text);
+
+                          String data = loginModelToJson(model);
+
+                          //Login function
+                        }
                       },
                       btnHeight: 35.h,
                       btnWidth: width,
