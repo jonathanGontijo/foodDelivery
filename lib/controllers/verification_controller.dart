@@ -1,5 +1,5 @@
+// ignore_for_file: prefer_final_fields
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:foodly/constants/constants.dart';
@@ -16,11 +16,10 @@ class VerificationController extends GetxController {
   String _code = "";
 
   String get code => _code;
+
   set setCode(String value) {
     _code = value;
   }
-
-  //390917
 
   RxBool _isLoading = false.obs;
 
@@ -30,9 +29,9 @@ class VerificationController extends GetxController {
     _isLoading.value = value;
   }
 
-  void verificationFunction(String code) async {
+  void verificationFunction() async {
     setLoading = true;
-    String accessToken = box.read('token');
+    String accessToken = box.read("token");
 
     Uri url = Uri.parse('$appBaseUrl/api/users/verify/$code');
 
@@ -57,15 +56,13 @@ class VerificationController extends GetxController {
 
         setLoading = false;
 
-        Get.offAll(() => MainScreen());
-
         Get.snackbar(
-          "You are succefully verified",
-          "Enjoy your awesome experience",
-          colorText: kLightWhite,
-          backgroundColor: kPrimary,
-          icon: const Icon(Ionicons.fast_food_outline),
-        );
+            "You are succefully verified", "Enjoy your awesome experience",
+            colorText: kLightWhite,
+            backgroundColor: kPrimary,
+            icon: const Icon(Ionicons.fast_food_outline));
+
+        Get.offAll(() => MainScreen());
       } else {
         var error = apiErrorFromJson(response.body);
 
