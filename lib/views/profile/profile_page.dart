@@ -3,18 +3,41 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:foodly/common/custom_button.dart';
 import 'package:foodly/common/custom_container.dart';
+import 'package:foodly/controllers/login_controller.dart';
+import 'package:foodly/models/login_response.dart';
 import 'package:foodly/views/auth/login_redirect.dart';
+import 'package:foodly/views/auth/verification_page.dart';
 import 'package:foodly/views/profile/widget/profile_app_bar.dart';
 import 'package:foodly/constants/constants.dart';
 import 'package:foodly/views/profile/widget/profile_tile_widget.dart';
 import 'package:foodly/views/profile/widget/user_info_widget.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    LoginResponse? user;
+    final controller = Get.put(LoginController());
+
+    final box = GetStorage();
+
+    String? token = box.read('token');
+
+    if (token != null) {
+      user = controller.getUserInfo();
+    }
+
+    if (token == null) {
+      return const LoginRedirect();
+    }
+
+    if (user != null && user.verification == false) {
+      return const VerificationPage();
+    }
+
     return Scaffold(
       backgroundColor: kPrimary,
       appBar: PreferredSize(
@@ -25,7 +48,7 @@ class ProfilePage extends StatelessWidget {
         child: CustomContainer(
             containerContent: Column(
           children: [
-            const UserInfoWidget(),
+            UserInfoWidget(user: user),
             SizedBox(
               height: 10.h,
             ),
@@ -36,7 +59,7 @@ class ProfilePage extends StatelessWidget {
               ),
               child: ListView(
                 padding: EdgeInsets.zero,
-                physics: NeverScrollableScrollPhysics(),
+                physics: const NeverScrollableScrollPhysics(),
                 children: [
                   ProfileTileWidget(
                     onTap: () {},

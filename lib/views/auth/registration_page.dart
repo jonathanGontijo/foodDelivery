@@ -6,9 +6,12 @@ import 'package:foodly/common/back_ground_container.dart';
 import 'package:foodly/common/custom_button.dart';
 import 'package:foodly/common/reusable_text.dart';
 import 'package:foodly/constants/constants.dart';
+import 'package:foodly/controllers/login_controller.dart';
+import 'package:foodly/controllers/registration_controller.dart';
 import 'package:foodly/models/registration_model.dart';
 import 'package:foodly/views/auth/widget/email_textfield.dart';
 import 'package:foodly/views/auth/widget/password_textfield.dart';
+import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 
 class RegistrationPage extends StatefulWidget {
@@ -36,6 +39,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(RegistrationController());
     return Scaffold(
       backgroundColor: kPrimary,
       appBar: AppBar(
@@ -108,6 +112,8 @@ class _RegistrationPageState extends State<RegistrationPage> {
                               password: _passwordController.text);
 
                           String data = registrationModelToJson(model);
+
+                          controller.registrationFunction(data);
                         }
                       },
                       btnHeight: 35.h,

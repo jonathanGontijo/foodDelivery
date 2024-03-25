@@ -6,6 +6,7 @@ import 'package:foodly/common/back_ground_container.dart';
 import 'package:foodly/common/custom_button.dart';
 import 'package:foodly/common/reusable_text.dart';
 import 'package:foodly/constants/constants.dart';
+import 'package:foodly/controllers/login_controller.dart';
 import 'package:foodly/models/login_model.dart';
 import 'package:foodly/views/auth/registration_page.dart';
 
@@ -38,6 +39,7 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(LoginController());
     return Scaffold(
       backgroundColor: kPrimary,
       appBar: AppBar(
@@ -115,7 +117,7 @@ class _LoginPageState extends State<LoginPage> {
 
                           String data = loginModelToJson(model);
 
-                          //Login function
+                          controller.loginFunction(data);
                         }
                       },
                       btnHeight: 35.h,
