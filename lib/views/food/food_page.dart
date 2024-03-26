@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -9,8 +10,11 @@ import 'package:foodly/common/custom_text_field.dart';
 import 'package:foodly/common/reusable_text.dart';
 import 'package:foodly/constants/constants.dart';
 import 'package:foodly/controllers/foods_controller.dart';
+import 'package:foodly/controllers/login_controller.dart';
 import 'package:foodly/hooks/fetch_restaurant.dart';
 import 'package:foodly/models/foods_model.dart';
+import 'package:foodly/models/login_response.dart';
+import 'package:foodly/views/auth/login_page.dart';
 import 'package:foodly/views/auth/phone_verification_page.dart';
 import 'package:foodly/views/restaurant/restaurant_page.dart';
 import 'package:get/get.dart';
@@ -29,8 +33,12 @@ class _FoodPageState extends State<FoodPage> {
 
   @override
   Widget build(BuildContext context) {
+    LoginResponse? user;
     final hookResult = useFetchRestaurant(widget.food.restaurant);
     final controller = Get.put(FoodController());
+    final loginController = Get.put(LoginController());
+
+    user = loginController.getUserInfo();
     controller.loadAdditives(widget.food.additives);
 
     return Scaffold(
@@ -280,7 +288,13 @@ class _FoodPageState extends State<FoodPage> {
                     children: [
                       GestureDetector(
                         onTap: () {
-                          showVeririficationSheet(context);
+                          if (user == null) {
+                            Get.to(() => const LoginPage());
+                          } else if (user.phoneVerification == false) {
+                            showVeririficationSheet(context);
+                          } else {
+                            print("Place Order");
+                          }
                         },
                         child: Padding(
                           padding: EdgeInsets.symmetric(horizontal: 12.w),
