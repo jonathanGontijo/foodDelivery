@@ -3,21 +3,38 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:foodly/common/app_style.dart';
 import 'package:foodly/common/reusable_text.dart';
 import 'package:foodly/constants/constants.dart';
+import 'package:foodly/controllers/user_location_controller.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:get/get.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-class CustomAppBar extends StatelessWidget {
+class CustomAppBar extends StatefulWidget {
   const CustomAppBar({super.key});
 
   @override
+  State<CustomAppBar> createState() => _CustomAppBarState();
+}
+
+class _CustomAppBarState extends State<CustomAppBar> {
+  @override
+  void initState() {
+    super.initState();
+    _determinePosition();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final controller = Get.put(UserLocationController());
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
-      width: width,
       height: 110.h,
+      width: width,
       color: kOffWhite,
       child: Container(
-        margin: const EdgeInsets.only(top: 20),
+        margin: EdgeInsets.only(top: 20.h),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             Row(
               crossAxisAlignment: CrossAxisAlignment.end,
@@ -26,7 +43,7 @@ class CustomAppBar extends StatelessWidget {
                   radius: 22.r,
                   backgroundColor: kSecondary,
                   backgroundImage: const NetworkImage(
-                      "https://images.unsplash.com/photo-1708980049480-9a6447097a64?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw4fHx8ZW58MHx8fHx8"),
+                      'https://d326fntlu7tb1e.cloudfront.net/uploads/bdec9d7d-0544-4fc4-823d-3b898f6dbbbf-vinci_03.jpeg'),
                 ),
                 Padding(
                   padding: EdgeInsets.only(bottom: 6.h, left: 8.w),
@@ -35,41 +52,86 @@ class CustomAppBar extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       ReusableText(
-                          text: "Delivery to",
+                          text: "Deliver to",
                           style: appStyle(13, kSecondary, FontWeight.w600)),
-                      SizedBox(
-                        width: width * 0.65,
-                        child: Text(
-                          "rua: benjamin constant, n 530, bairro pedra azul",
-                          overflow: TextOverflow.ellipsis,
-                          style: appStyle(11, kGrayLight, FontWeight.normal),
+                      Obx(
+                        () => SizedBox(
+                          width: width * 0.65,
+                          child: Text(
+                              controller.address == ""
+                                  ? "16768 21st Ave N, Plymouth, MN 55447"
+                                  : controller.address,
+                              overflow: TextOverflow.ellipsis,
+                              style:
+                                  appStyle(11, kGrayLight, FontWeight.normal)),
                         ),
-                      ),
+                      )
                     ],
                   ),
                 ),
-                Text(
-                  getTimeOfDay(),
-                  style: const TextStyle(fontSize: 35),
-                )
               ],
             ),
+            Text(
+              getTimeOfDay(),
+              style: const TextStyle(fontSize: 35),
+            )
           ],
         ),
       ),
     );
   }
-}
 
-String getTimeOfDay() {
-  DateTime now = DateTime.now();
-  int hour = now.hour;
+  String getTimeOfDay() {
+    DateTime now = DateTime.now();
+    int hour = now.hour;
 
-  if (hour >= 0 && hour < 12) {
-    return ' ☀️ ';
-  } else if (hour >= 12 && hour < 16) {
-    return ' ⛅ ';
-  } else {
-    return ' 🌙 ';
+    if (hour >= 0 && hour < 12) {
+      return ' ☀️ ';
+    } else if (hour >= 12 && hour < 16) {
+      return ' ⛅ ';
+    } else {
+      return ' 🌙 ';
+    }
+  }
+
+  Future<void> _determinePosition() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    // Test if location services are enabled.
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      // Location services are not enabled don't continue
+      // accessing the position and request users of the
+      // App to enable the location services.
+      return Future.error('Location services are disabled.');
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        return Future.error('Location permissions are denied');
+      }
+    }
+    if (permission == LocationPermission.deniedForever) {
+      // Permissions are denied forever, handle appropriately.
+      return Future.error(
+          'Location permissions are permanently denied, we cannot request permissions.');
+    }
+    _getCurrentLocation();
+    // When we reach here, permissions are granted and we can
+    // continue accessing the position of the device.
+  }
+
+  Future<void> _getCurrentLocation() async {
+    final controller = Get.put(UserLocationController());
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.best);
+    LatLng currentLocation = LatLng(position.latitude, position.longitude);
+    controller.setPosition(currentLocation);
+    print(currentLocation);
+
+    controller.getUserAddress(currentLocation);
   }
 }
