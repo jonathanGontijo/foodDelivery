@@ -43,6 +43,14 @@ class UserLocationController extends GetxController {
     _address.value = value;
   }
 
+  RxString _address1 = ''.obs;
+
+  String get address1 => _address1.value;
+
+  set setAddress1(String value) {
+    _address1.value = value;
+  }
+
   RxString _postalCode = ''.obs;
 
   String get postalCode => _postalCode.value;
