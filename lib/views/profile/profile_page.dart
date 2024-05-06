@@ -43,9 +43,7 @@ class ProfilePage extends StatelessWidget {
     return Scaffold(
       backgroundColor: kPrimary,
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(40.h),
-        child: const ProfileAppBar(),
-      ),
+          preferredSize: Size.fromHeight(40.h), child: const ProfileAppBar()),
       body: SafeArea(
         child: CustomContainer(
             containerContent: Column(
@@ -55,34 +53,30 @@ class ProfilePage extends StatelessWidget {
               height: 10.h,
             ),
             Container(
-              height: 210.h,
-              decoration: const BoxDecoration(
-                color: kLightWhite,
-              ),
+              height: 175.h,
+              decoration: const BoxDecoration(color: kLightWhite),
               child: ListView(
                 padding: EdgeInsets.zero,
                 physics: const NeverScrollableScrollPhysics(),
                 children: [
                   ProfileTileWidget(
-                    onTap: () {},
-                    title: "Orders",
-                    icon: Ionicons.fast_food_outline,
-                  ),
+                      onTap: () {
+                        Get.to(() => const LoginRedirect());
+                      },
+                      title: "My Orders",
+                      icon: Ionicons.fast_food_outline),
                   ProfileTileWidget(
-                    onTap: () {},
-                    title: "Favorite Places",
-                    icon: Ionicons.heart_outline,
-                  ),
+                      onTap: () {},
+                      title: "My Favorite Places",
+                      icon: Ionicons.heart_outline),
                   ProfileTileWidget(
-                    onTap: () {},
-                    title: "Review",
-                    icon: Ionicons.chatbubble_outline,
-                  ),
+                      onTap: () {},
+                      title: "Review",
+                      icon: Ionicons.chatbubble_outline),
                   ProfileTileWidget(
-                    onTap: () {},
-                    title: "Cuppons",
-                    icon: MaterialCommunityIcons.tag_outline,
-                  ),
+                      onTap: () {},
+                      title: "Coupons",
+                      icon: MaterialCommunityIcons.tag_outline),
                 ],
               ),
             ),
@@ -90,47 +84,40 @@ class ProfilePage extends StatelessWidget {
               height: 15.h,
             ),
             Container(
-              height: 210.h,
-              decoration: const BoxDecoration(
-                color: kLightWhite,
-              ),
+              height: 175.h,
+              decoration: const BoxDecoration(color: kLightWhite),
               child: ListView(
                 padding: EdgeInsets.zero,
-                physics: NeverScrollableScrollPhysics(),
+                physics: const NeverScrollableScrollPhysics(),
                 children: [
                   ProfileTileWidget(
-                    onTap: () {
-                      Get.to(() => const Addresses());
-                    },
-                    title: "Shipping Address",
-                    icon: SimpleLineIcons.location_pin,
-                  ),
+                      onTap: () {
+                        Get.to(() => const Addresses(),
+                            transition: Transition.rightToLeft,
+                            duration: const Duration(milliseconds: 900));
+                      },
+                      title: "Shipping Address",
+                      icon: SimpleLineIcons.location_pin),
                   ProfileTileWidget(
-                    onTap: () {},
-                    title: "Service Center",
-                    icon: AntDesign.customerservice,
-                  ),
+                      onTap: () {},
+                      title: "Sevice Center",
+                      icon: AntDesign.customerservice),
                   ProfileTileWidget(
-                    onTap: () {},
-                    title: "App FeedBack",
-                    icon: MaterialIcons.rss_feed,
-                  ),
+                      onTap: () {},
+                      title: "App FeedBack",
+                      icon: MaterialIcons.rss_feed),
                   ProfileTileWidget(
-                    onTap: () {},
-                    title: "Settings",
-                    icon: AntDesign.setting,
-                  ),
+                      onTap: () {}, title: "Settings", icon: AntDesign.setting),
                 ],
               ),
             ),
             SizedBox(
-              height: 40.h,
+              height: 20.h,
             ),
             CustomButton(
               onTap: () {
-                Get.to(() => const LoginRedirect());
+                controller.logout();
               },
-              btnWidth: width - 20,
               btnColor: kRed,
               text: "Logout",
               radius: 0,

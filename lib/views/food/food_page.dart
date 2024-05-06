@@ -1,5 +1,4 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -8,19 +7,23 @@ import 'package:foodly/common/app_style.dart';
 import 'package:foodly/common/custom_button.dart';
 import 'package:foodly/common/custom_text_field.dart';
 import 'package:foodly/common/reusable_text.dart';
+import 'package:foodly/common/verification_modal.dart';
+//import 'package:foodly/common/verification_modal.dart';
 import 'package:foodly/constants/constants.dart';
+import 'package:foodly/controllers/cart_controller.dart';
 import 'package:foodly/controllers/foods_controller.dart';
 import 'package:foodly/controllers/login_controller.dart';
 import 'package:foodly/hooks/fetch_restaurant.dart';
+import 'package:foodly/models/cart_request.dart';
 import 'package:foodly/models/foods_model.dart';
 import 'package:foodly/models/login_response.dart';
 import 'package:foodly/views/auth/login_page.dart';
-import 'package:foodly/views/auth/phone_verification_page.dart';
 import 'package:foodly/views/restaurant/restaurant_page.dart';
 import 'package:get/get.dart';
 
 class FoodPage extends StatefulHookWidget {
   const FoodPage({super.key, required this.food});
+
   final FoodsModel food;
 
   @override
@@ -33,6 +36,7 @@ class _FoodPageState extends State<FoodPage> {
 
   @override
   Widget build(BuildContext context) {
+    final cartController = Get.put(CartController());
     LoginResponse? user;
     final hookResult = useFetchRestaurant(widget.food.restaurant);
     final controller = Get.put(FoodController());
@@ -40,10 +44,8 @@ class _FoodPageState extends State<FoodPage> {
 
     user = loginController.getUserInfo();
     controller.loadAdditives(widget.food.additives);
-
     return Scaffold(
       body: ListView(
-        //  physics: const NeverScrollableScrollPhysics(),
         padding: EdgeInsets.zero,
         children: [
           ClipRRect(
@@ -64,36 +66,34 @@ class _FoodPageState extends State<FoodPage> {
                           height: 230.h,
                           color: kLightWhite,
                           child: CachedNetworkImage(
-                            fit: BoxFit.cover,
-                            imageUrl: widget.food.imageUrl[i],
-                          ),
+                              fit: BoxFit.cover,
+                              imageUrl: widget.food.imageUrl[i]),
                         );
                       }),
                 ),
                 Positioned(
                   bottom: 10,
                   child: Padding(
-                      padding: const EdgeInsets.only(left: 12.0),
-                      child: Obx(
-                        () => Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: List.generate(
-                            widget.food.imageUrl.length,
-                            (index) {
-                              return Container(
-                                margin: EdgeInsets.all(4.h),
-                                width: 10.w,
-                                height: 10.h,
-                                decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: controller.currentPage == index
-                                        ? kSecondary
-                                        : kGrayLight),
-                              );
-                            },
-                          ),
-                        ),
-                      )),
+                    padding: const EdgeInsets.only(left: 12.0),
+                    child: Obx(
+                      () => Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children:
+                            List.generate(widget.food.imageUrl.length, (index) {
+                          return Container(
+                            margin: EdgeInsets.all(4.h),
+                            width: 10.w,
+                            height: 10.h,
+                            decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: controller.currentPage == index
+                                    ? kSecondary
+                                    : kGrayLight),
+                          );
+                        }),
+                      ),
+                    ),
+                  ),
                 ),
                 Positioned(
                   top: 40.h,
@@ -142,19 +142,19 @@ class _FoodPageState extends State<FoodPage> {
                     Obx(
                       () => ReusableText(
                           text:
-                              "R\$ ${((widget.food.price + controller.additivePrice) * controller.count.value)}",
+                              "\$ ${((widget.food.price + controller.additivePrice) * controller.count.value)}",
                           style: appStyle(18, kPrimary, FontWeight.w600)),
                     )
                   ],
                 ),
                 SizedBox(
-                  height: 15.h,
+                  height: 5.h,
                 ),
                 Text(
                   widget.food.description,
                   textAlign: TextAlign.justify,
                   maxLines: 8,
-                  style: appStyle(12, kGray, FontWeight.w400),
+                  style: appStyle(11, kGray, FontWeight.w400),
                 ),
                 SizedBox(
                   height: 5.h,
@@ -167,8 +167,6 @@ class _FoodPageState extends State<FoodPage> {
                         List.generate(widget.food.foodTags.length, (index) {
                       final tag = widget.food.foodTags[index];
                       return Container(
-                        height: 15.h,
-                        width: 50.w,
                         margin: EdgeInsets.only(right: 5.w),
                         decoration: BoxDecoration(
                             color: kPrimary,
@@ -191,6 +189,9 @@ class _FoodPageState extends State<FoodPage> {
                 ReusableText(
                     text: "Additives and Toppings",
                     style: appStyle(18, kDark, FontWeight.w600)),
+                SizedBox(
+                  height: 10.h,
+                ),
                 Obx(
                   () => Column(
                     children:
@@ -209,8 +210,11 @@ class _FoodPageState extends State<FoodPage> {
                               ReusableText(
                                   text: additive.title,
                                   style: appStyle(11, kDark, FontWeight.w400)),
+                              SizedBox(
+                                width: 5.w,
+                              ),
                               ReusableText(
-                                  text: "R\$ ${additive.price}",
+                                  text: "\$ ${additive.price}",
                                   style:
                                       appStyle(11, kPrimary, FontWeight.w600)),
                             ],
@@ -218,6 +222,7 @@ class _FoodPageState extends State<FoodPage> {
                           onChanged: (bool? value) {
                             additive.toggleChecked();
                             controller.getTotalPrice();
+                            controller.getCartAdditive();
                           });
                     }),
                   ),
@@ -229,9 +234,11 @@ class _FoodPageState extends State<FoodPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     ReusableText(
-                        text: "Quantity",
-                        style: appStyle(18, kDark, FontWeight.w600)),
-                    SizedBox(height: 15.h),
+                        text: "Qauntity",
+                        style: appStyle(18, kDark, FontWeight.bold)),
+                    SizedBox(
+                      width: 5.w,
+                    ),
                     Row(
                       children: [
                         GestureDetector(
@@ -262,8 +269,9 @@ class _FoodPageState extends State<FoodPage> {
                   height: 20.h,
                 ),
                 ReusableText(
-                    text: "Preferences",
-                    style: appStyle(18, kDark, FontWeight.bold)),
+                  text: "Preferences",
+                  style: appStyle(18, kDark, FontWeight.w600),
+                ),
                 SizedBox(
                   height: 5.h,
                 ),
@@ -291,7 +299,7 @@ class _FoodPageState extends State<FoodPage> {
                           if (user == null) {
                             Get.to(() => const LoginPage());
                           } else if (user.phoneVerification == false) {
-                            showVeririficationSheet(context);
+                            showVerificationSheet(context);
                           } else {
                             print("Place Order");
                           }
@@ -305,7 +313,21 @@ class _FoodPageState extends State<FoodPage> {
                         ),
                       ),
                       GestureDetector(
-                        onTap: () {},
+                        onTap: () {
+                          double price =
+                              (widget.food.price + controller.additivePrice) *
+                                  controller.count.value;
+
+                          var data = CartRequest(
+                              productId: widget.food.id,
+                              additives: controller.getCartAdditive(),
+                              quantity: controller.count.value,
+                              totalPrice: price);
+
+                          String cart = cartRequestToJson(data);
+
+                          cartController.addToCart(cart);
+                        },
                         child: CircleAvatar(
                           backgroundColor: kSecondary,
                           radius: 20.r,
@@ -320,78 +342,9 @@ class _FoodPageState extends State<FoodPage> {
                 )
               ],
             ),
-          ),
+          )
         ],
       ),
-    );
-  }
-
-  Future<dynamic> showVeririficationSheet(BuildContext context) {
-    return showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.transparent,
-      showDragHandle: true,
-      builder: (BuildContext context) {
-        return Container(
-          height: 500.h,
-          width: width,
-          decoration: BoxDecoration(
-            image: const DecorationImage(
-              image: AssetImage('assets/images/restaurant_bk.png'),
-              fit: BoxFit.fill,
-            ),
-            color: kLightWhite,
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(12.r),
-              topRight: Radius.circular(12.r),
-            ),
-          ),
-          child: Padding(
-            padding: EdgeInsets.all(8.h),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                SizedBox(
-                  height: 10.h,
-                ),
-                ReusableText(
-                  text: "Verify Your Phone Number",
-                  style: appStyle(18, kPrimary, FontWeight.w600),
-                ),
-                SizedBox(
-                  height: 250.h,
-                  child: Column(
-                    children:
-                        List.generate(verificationReasons.length, (index) {
-                      return ListTile(
-                        leading: const Icon(
-                          Icons.check_circle_outline,
-                          color: kPrimary,
-                        ),
-                        title: Text(
-                          verificationReasons[index],
-                          textAlign: TextAlign.justify,
-                          style: appStyle(11, kGrayLight, FontWeight.normal),
-                        ),
-                      );
-                    }),
-                  ),
-                ),
-                SizedBox(
-                  height: 10.h,
-                ),
-                CustomButton(
-                  text: 'Verify Phone Number',
-                  btnHeight: 35.h,
-                  onTap: () {
-                    Get.to(() => const PhoneVerificationPage());
-                  },
-                )
-              ],
-            ),
-          ),
-        );
-      },
     );
   }
 }

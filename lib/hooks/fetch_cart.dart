@@ -1,25 +1,20 @@
-import 'dart:convert';
-
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:foodly/constants/constants.dart';
-import 'package:foodly/controllers/user_location_controller.dart';
-import 'package:foodly/models/addresses_response.dart';
 import 'package:foodly/models/api_eror.dart';
+import 'package:foodly/models/cart_response.dart';
 import 'package:foodly/models/hook_models/hook_result.dart';
-import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 
-FetchHook useFetchDefault() {
-  final controller = Get.put(UserLocationController());
+FetchHook useFetchCart() {
   final box = GetStorage();
-  final addresses = useState<AddressResponse?>(null);
+  final cart = useState<List<CartResponse>?>(null);
   final isLoading = useState<bool>(false);
   final error = useState<Exception?>(null);
   final appiError = useState<ApiError?>(null);
 
   Future<void> fetchData() async {
-    String? accessToken = box.read("token");
+    String accessToken = box.read("token");
 
     Map<String, String> headers = {
       'Content-Type': 'application/json',
@@ -28,15 +23,11 @@ FetchHook useFetchDefault() {
     isLoading.value = true;
 
     try {
-      Uri url = Uri.parse('$appBaseUrl/api/address/default');
+      Uri url = Uri.parse('$appBaseUrl/api/cart');
       final response = await http.get(url, headers: headers);
 
       if (response.statusCode == 200) {
-        var data = response.body;
-        var decoded = jsonDecode(data);
-        addresses.value = AddressResponse.fromJson(decoded);
-        print(addresses.value!.addressLine1);
-        controller.setAddress1 = addresses.value!.addressLine1;
+        cart.value = cartResponseFromJson(response.body);
       } else {
         appiError.value = apiErrorFromJson(response.body);
       }
@@ -58,7 +49,7 @@ FetchHook useFetchDefault() {
   }
 
   return FetchHook(
-    data: addresses.value,
+    data: cart.value,
     isLoading: isLoading.value,
     error: error.value,
     refetch: refetch,

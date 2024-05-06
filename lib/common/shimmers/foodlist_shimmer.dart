@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:foodly/common/shimmers/shimmer_widget.dart';
 import 'package:foodly/constants/constants.dart';
 
-
 class FoodsListShimmer extends StatelessWidget {
   const FoodsListShimmer({super.key});
 
@@ -18,9 +17,7 @@ class FoodsListShimmer extends StatelessWidget {
           itemCount: 6,
           itemBuilder: (context, index) {
             return ShimmerWidget(
-                shimmerWidth: width,
-                shimmerHieght: 70.h,
-                shimmerRadius: 12);
+                shimmerWidth: width, shimmerHieght: 70.h, shimmerRadius: 12);
           }),
     );
   }

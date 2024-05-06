@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:foodly/common/shimmers/shimmer_widget.dart';
 import 'package:foodly/constants/constants.dart';
 
-
 class NearbyShimmer extends StatelessWidget {
   const NearbyShimmer({super.key});
 
