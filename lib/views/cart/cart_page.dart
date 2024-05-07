@@ -48,6 +48,7 @@ class CartPage extends HookWidget {
     return Scaffold(
       backgroundColor: kPrimary,
       appBar: AppBar(
+        centerTitle: true,
         elevation: 0,
         backgroundColor: kOffWhite,
         title: ReusableText(

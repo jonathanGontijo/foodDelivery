@@ -8,7 +8,6 @@ import 'package:foodly/common/custom_button.dart';
 import 'package:foodly/common/custom_text_field.dart';
 import 'package:foodly/common/reusable_text.dart';
 import 'package:foodly/common/verification_modal.dart';
-//import 'package:foodly/common/verification_modal.dart';
 import 'package:foodly/constants/constants.dart';
 import 'package:foodly/controllers/cart_controller.dart';
 import 'package:foodly/controllers/foods_controller.dart';
@@ -17,7 +16,11 @@ import 'package:foodly/hooks/fetch_restaurant.dart';
 import 'package:foodly/models/cart_request.dart';
 import 'package:foodly/models/foods_model.dart';
 import 'package:foodly/models/login_response.dart';
+import 'package:foodly/models/order_request.dart';
+
+import 'package:foodly/models/restaurants_model.dart';
 import 'package:foodly/views/auth/login_page.dart';
+import 'package:foodly/views/orders/order_page.dart';
 import 'package:foodly/views/restaurant/restaurant_page.dart';
 import 'package:get/get.dart';
 
@@ -39,6 +42,7 @@ class _FoodPageState extends State<FoodPage> {
     final cartController = Get.put(CartController());
     LoginResponse? user;
     final hookResult = useFetchRestaurant(widget.food.restaurant);
+    RestaurantsModel? restaurant = hookResult.data;
     final controller = Get.put(FoodController());
     final loginController = Get.put(LoginController());
 
@@ -301,7 +305,25 @@ class _FoodPageState extends State<FoodPage> {
                           } else if (user.phoneVerification == false) {
                             showVerificationSheet(context);
                           } else {
-                            print("Place Order");
+                            double price =
+                                (widget.food.price + controller.additivePrice) *
+                                    controller.count.value;
+                            OrderItem item = OrderItem(
+                              foodId: widget.food.id,
+                              quantity: controller.count.value,
+                              price: price,
+                              additives: controller.getCartAdditive(),
+                              instructions: _preferences.text,
+                            );
+                            Get.to(
+                              () => OrderPage(
+                                item: item,
+                                restaunt: restaurant,
+                                food: widget.food,
+                              ),
+                              transition: Transition.cupertino,
+                              duration: const Duration(milliseconds: 900),
+                            );
                           }
                         },
                         child: Padding(
