@@ -12,7 +12,10 @@ import 'package:foodly/constants/constants.dart';
 import 'package:foodly/controllers/cart_controller.dart';
 import 'package:foodly/controllers/foods_controller.dart';
 import 'package:foodly/controllers/login_controller.dart';
+import 'package:foodly/hooks/fetch_default.dart';
 import 'package:foodly/hooks/fetch_restaurant.dart';
+import 'package:foodly/models/address_model.dart';
+import 'package:foodly/models/addresses_response.dart';
 import 'package:foodly/models/cart_request.dart';
 import 'package:foodly/models/foods_model.dart';
 import 'package:foodly/models/login_response.dart';
@@ -42,6 +45,8 @@ class _FoodPageState extends State<FoodPage> {
     final cartController = Get.put(CartController());
     LoginResponse? user;
     final hookResult = useFetchRestaurant(widget.food.restaurant);
+    final data = useFetchDefault();
+    AddressResponse? address = data.data;
     RestaurantsModel? restaurant = hookResult.data;
     final controller = Get.put(FoodController());
     final loginController = Get.put(LoginController());
@@ -318,7 +323,7 @@ class _FoodPageState extends State<FoodPage> {
                             Get.to(
                               () => OrderPage(
                                 item: item,
-                                restaunt: restaurant,
+                                restaurant: restaurant,
                                 food: widget.food,
                               ),
                               transition: Transition.cupertino,
